@@ -1,0 +1,81 @@
+
+services:
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
+    env_file: .env
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - inception
+    restart: on-failure
+    expose:
+      - "2424"
+
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
+    env_file: .env
+    secrets:
+      - db_password
+      - credentials
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    restart: on-failure
+    expose:
+      - "4242"
+
+  nginx:
+    build:
+      context: ./requirements/nginx
+    image: nginx
+    container_name: nginx
+    env_file: .env
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+    restart: on-failure
+    ports:
+      - "443:443"
+
+volumes:
+  db_data:
+    name: db_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/bozil/data/mariadb
+  wp_data:
+    name: wp_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/bozil/data/wordpress
+
+networks:
+  inception:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  credentials:
+    file: ../secrets/credentials.txt
