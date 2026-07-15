@@ -14,10 +14,24 @@ Clone the repository, then create your local configuration files from the
 provided examples (these are git-ignored and must be created manually):
 
 ```bash
-cp srcs/.env.example srcs/.env
-cp secrets/db_password.txt.example secrets/db_password.txt
-cp secrets/db_root_password.txt.example secrets/db_root_password.txt
-cp secrets/credentials.txt.example secrets/credentials.txt
+cp srcs/.env
+cp secrets/db_password.txt (WP_USER_PASSWORD=XXX)
+cp secrets/db_root_password.txt(WP_ADMIN_PASSWORD=XXX)
+cp secrets/credentials.txt 
+(WP_ADMIN_PASSWORD= and WP_USER_PASSWORD=)
+```
+.env:
+```
+DOMAIN_NAME=<your_login>.42.fr
+MYSQL_DATABASE=wordpress
+MYSQL_USER=wpuser
+WP_TITLE=Inception
+WP_ADMIN_USER=<a name without "admin"/"administrator">
+WP_ADMIN_EMAIL=<your_email>
+WP_USER=<a second, different username>
+WP_USER_EMAIL=<a second, different email>
+DB_PORT=2424
+PHP_FPM_PORT=4242
 ```
 
 Edit each file:
